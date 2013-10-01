@@ -1,0 +1,894 @@
+From: <Saved by Windows Internet Explorer 7>
+Subject: GP Othello -- Machine Learning Final Project
+Date: Fri, 22 May 2009 10:32:36 -0400
+MIME-Version: 1.0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.cs.columbia.edu/~evs/ml/OthelloStudProj/janak/
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.5579
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>GP Othello -- Machine Learning Final Project</TITLE>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"Scott Susser and Janak Parekh" name=3DAuthor>
+<META content=3D"MSHTML 6.00.6000.16825" name=3DGENERATOR></HEAD>
+<BODY text=3D#000000 vLink=3D#551a8b aLink=3D#fe0000 link=3D#0000ee=20
+bgColor=3D#ffffff><B><FONT size=3D+3>Machine Learning Final Project:=20
+Othello</FONT></B> <BR><I>Improving the accuracy of Othello by using new =
+
+primitives and intelligent training systems</I> <BR><B>By <A=20
+href=3D"mailto:jjp32@columbia.edu">Janak J Parekh</A> and <A=20
+href=3D"http://www.cs.columbia.edu/~evs/ml/OthelloStudProj/janak/sas104@c=
+olumbia.edu">Scott=20
+A Susser</A></B> <BR>&nbsp;=20
+<TABLE cols=3D1 width=3D"100%" bgColor=3D#ffffc0 border=3D1 NOSAVE>
+  <TBODY>
+  <TR NOSAVE>
+    <TD NOSAVE>To navigate through this document quickly, click on one =
+of the=20
+      following keywords:&nbsp; <BR><B><A=20
+      =
+href=3D"http://www.cs.columbia.edu/~evs/ml/OthelloStudProj/janak/#Abstrac=
+t">Abstract</A>=20
+      * <A=20
+      =
+href=3D"http://www.cs.columbia.edu/~evs/ml/OthelloStudProj/janak/#Introdu=
+ction">Introduction</A>=20
+      * <A=20
+      =
+href=3D"http://www.cs.columbia.edu/~evs/ml/OthelloStudProj/janak/#Trainin=
+g">Training</A>=20
+      * <A=20
+      =
+href=3D"http://www.cs.columbia.edu/~evs/ml/OthelloStudProj/janak/#Impleme=
+ntation">Implementation</A>=20
+      * <A=20
+      =
+href=3D"http://www.cs.columbia.edu/~evs/ml/OthelloStudProj/janak/#Results=
+">Results</A>=20
+      * <A=20
+      =
+href=3D"http://www.cs.columbia.edu/~evs/ml/OthelloStudProj/janak/#Other =
+works">Other=20
+      Works</A> * <A=20
+      =
+href=3D"http://www.cs.columbia.edu/~evs/ml/OthelloStudProj/janak/#Future =
+Research">Future=20
+      Research</A> * <A=20
+      =
+href=3D"http://www.cs.columbia.edu/~evs/ml/OthelloStudProj/janak/#Conclus=
+ion">Conclusion</A>=20
+      * <A=20
+      =
+href=3D"http://www.cs.columbia.edu/~evs/ml/OthelloStudProj/janak/#Miscell=
+aneous">Miscellaneous</A></B></TD></TR></TBODY></TABLE>
+<H2><A name=3DAbstract></A><B>Abstract</B></H2>Project Othello showed us =
+the=20
+importance of the training system in the development of the genetic=20
+program.&nbsp; As in "real life", the GP needs an opportunity to work =
+with=20
+randomness and then build to higher, successive levels of players, until =
+it is=20
+"fit" enough to compete against strong players like Edgar.&nbsp; =
+Therefore, we=20
+decided to develop an intelligent training system, encapsulating =
+<I>several</I>,=20
+not one, models:=20
+<UL>
+  <LI>Several players designed &amp; hard coded by us that become =
+progressively=20
+  harder at each&nbsp; level (for example, a player that always tries to =
+
+  reach&nbsp; the edges, etc.)=20
+  <LI>Edgar, and finally,=20
+  <LI>Scott, our in-house Othello expert. </LI></UL>As was true in the =
+original=20
+Project Othello, time was our largest constraint, and it prohibited =
+further=20
+research into modifying the trainer into working around the weaknesses =
+in our=20
+generated players.=20
+<H2><A name=3DIntroduction></A><B>Introduction (So Ya Wanna Play A Game =
+. .=20
+.)</B></H2>As anyone who has ever played Othello (or <I>Reversi</I> if =
+you are=20
+employed by Microsoft) can tell you, Othello is a very challenging game =
+to=20
+play.&nbsp; As it says on the box of the Milton Bradley edition, it =
+takes, "<I>A=20
+Minute to Learn . . . A Lifetime to Master."&nbsp; </I>The biggest =
+problem we=20
+faced in developing a good player was in determining what primitives to =
+give to=20
+Edgar to form his new evaluation function with.&nbsp; This is rather =
+difficult,=20
+because unlike most standard board games, the classic measure of the =
+value of a=20
+board, namely the number of your pieces vs. those of your opponents, =
+does not=20
+count for much in Othello.&nbsp; This requires that we find primitives =
+that=20
+express the qualities of a game board that are, at least in part, the =
+true=20
+measure of its value.&nbsp; These primitives were chosen by our resident =
+Othello=20
+expert, Scott, for the original Project Othello assignment.&nbsp; They =
+are all=20
+described here.&nbsp; (These descriptions come from the original Project =
+Othello=20
+assignment.=20
+<UL>
+  <LI><B>Primitive 1.&nbsp; Number of white and black pieces near =
+occupied=20
+  corners (num_white_near_corners; num_black_near_corners)</B> <BR>This =
+first=20
+  primitive that we implemented was a test to see how many spaces near =
+occupied=20
+  corners belonged to each color.&nbsp; It did not matter which color =
+occupied=20
+  the corner.=20
+  <P>Why does this matter?&nbsp; While the corner squares are the most=20
+  important, and powerful, squares in the game, occupying a square next =
+to an=20
+  opponent's corner square can take away some of his advantage, while =
+occupying=20
+  a square next to one of your corner squares can help seal =
+yours.</P></LI></UL>
+<UL>How does this work? The reason these squares have this effect is =
+because=20
+  the next 5 closest squares to each corner will almost always be =
+occupied prior=20
+  to the corner.&nbsp; Which means once the corner is taken, any =
+additional=20
+  pieces placed next to it will be fairly safe from being flipped. A =
+scenario=20
+  where this primitive would be useful is as follows:=20
+  <P>&nbsp;&nbsp;&nbsp;&nbsp; Say the top row is set up as follows (an X =
+is an=20
+  empty square): <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp; X X B B B B B X</TT>=20
+  <BR>&nbsp;&nbsp;&nbsp;&nbsp; Then B goes in the corner on the left:=20
+  <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp; B X B B B B B X</TT>=20
+  <P>Invoking this primitive, the GP would want to go in column 2.&nbsp; =
+Not=20
+  only does this block the corner and help get white the top row of the =
+game=20
+  board, it also gains him a corner.=20
+  <P>&nbsp;&nbsp;&nbsp;&nbsp; White's turn: =
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp; B W=20
+  B B B B B X</TT> <BR>&nbsp;&nbsp;&nbsp;&nbsp; White's next turn:=20
+  <BR><TT>&nbsp;&nbsp;&nbsp;&nbsp; B W W W W W W W</TT> <BR>&nbsp;=20
+  <LI><B>Primitive 2. Number of white and black pieces near the sides, =
+excluding=20
+  near corners (num_white_near_side; num_black_near_side)</B> </LI></UL>
+<UL>The second primitive we chose was the number of spaces near the =
+sides, but=20
+  not near corners, as shown by the Xs below:=20
+  <CENTER><TT>O O O O O O O O</TT></CENTER>
+  <CENTER><TT>O O X X X X O O</TT></CENTER>
+  <CENTER><TT>O X O O O O X O</TT></CENTER>
+  <CENTER><TT>O X O O O O X O</TT></CENTER>
+  <CENTER><TT>O X O O O O X O</TT></CENTER>
+  <CENTER><TT>O X O O O O X O</TT></CENTER>
+  <CENTER><TT>O O X X X X O O</TT></CENTER>
+  <CENTER><TT>O O O O O O O O</TT></CENTER>
+  <P>These spaces are bad for a player to occupy.&nbsp; Why?&nbsp; They =
+make the=20
+  sides accessible to your opponent, which gives him <BR>greater control =
+over=20
+  the playing area. (Remember that the pieces on the sides can only be =
+flipped=20
+  in one dimension.) <BR>&nbsp;=20
+  <LI><B>Primitive 3. Number of white and black pieces in "solid =
+side-centers"=20
+  (num_white_center_edges,&nbsp; num_black_center_edges)</B>=20
+  <P>This primitive can be represented by the following (the X-X =
+represents the=20
+  desired positions):=20
+  <CENTER><TT>O O X-----X O O</TT></CENTER>
+  <CENTER><TT>O O O O O O O O</TT></CENTER>
+  <CENTER><TT>X O O O O O O X</TT></CENTER>
+  <CENTER><TT>| O O O O O O |</TT></CENTER>
+  <CENTER><TT>| O O O O O O |</TT></CENTER>
+  <CENTER><TT>X O O O O O O X</TT></CENTER>
+  <CENTER><TT>O O O O O O O O</TT></CENTER>
+  <CENTER><TT>O O X-----X O O</TT></CENTER>
+  <P>This is useful because when a player has control of the 4 center =
+pieces on=20
+  a side of the board, he has a very useful tool.&nbsp; It eliminates =
+the 2=20
+  squares next to it (row or columns 2 and 7) from being used by his =
+opponent,=20
+  because if his opponent plays there, the GP can take the corner. It =
+also gives=20
+  the GP 2 additional safe spaces to make a move.&nbsp; When the middle =
+of the=20
+  game board is filled up, and the game comes down to the corners, the =
+GP can=20
+  use those 2 spaces with minimal danger of giving his opponent a =
+corner.=20
+  <BR>&nbsp;=20
+  <P>In addition to the above analysis, we have decided on our own brief =
+
+  evaluations of the existing primitives:=20
+  <P><B>num_white,&nbsp; num_black </B>- These are the traditional =
+measures of=20
+  value for board games.&nbsp; You have more pieces so you're =
+winning.&nbsp;=20
+  Sounds good, right?&nbsp; Well, not when you're dealing with =
+Othello.&nbsp;=20
+  The rules of play provide for quick reversals of fortune that makes =
+the game=20
+  entirely into one of strategic placement of pieces, and not one of =
+numbers=20
+  (except after the last turn, of course).=20
+  <P><B>num_white_edges, num_black_edges </B>- Now these are =
+important.&nbsp;=20
+  They help establish one of the most important things needed for a =
+victory in=20
+  Othello ( ** Novice Players Note:&nbsp; Big tip on how to play =
+------&gt; ) is=20
+  control of the middle pieces.&nbsp; Not we say control, =
+<B><I>NOT</I></B>=20
+  occupancy.&nbsp; With pieces on the edges, large quantities of the =
+middle=20
+  pieces can be captured at once, with no danger of your opponent coming =
+up from=20
+  behind.&nbsp; Of course, if you want to occupy the edges, it helps to =
+have=20
+  control of them.&nbsp; This brings us to:=20
+  <P><B>num_white_corners,&nbsp; num_black_corners </B>- These are =
+<B>THE MOST=20
+  IMPORTANT</B> squares on the board.&nbsp; The corner pieces can never =
+be=20
+  flipped, and therefore occupying them can give a player control of the =
+
+  perimeter of the game board, which in turn delivers the middle of the =
+board,=20
+  and, the game.&nbsp; It is (although possible) difficult to neutralize =
+the=20
+  corner pieces.&nbsp; In fact, it takes at minimum three pieces to =
+totally=20
+  neutralize one corner square.=20
+  <P><B>num_white_near_corners, num_black_near_corners&nbsp;</B> -&nbsp; =
+These=20
+  are the most dangerous pieces on the game board.&nbsp; Occupying them =
+is very=20
+  risky, because it is the first step in giving your opponent a window =
+tot he=20
+  corner.&nbsp; this makes the non-edge near-corner square the most=20
+  dangerous.&nbsp; It is the most vulnerable to being flipped.&nbsp; =
+However, it=20
+  is important to note that once the corners are occupied, these squares =
+become=20
+  valuable.&nbsp; Hence we have adjusted these primitives to mean pieces =
+near=20
+  <I>unoccupied</I> corners.&nbsp; For squares near occupied corners, =
+see the=20
+  additional primitive above.</P></LI></UL>
+<H2><A name=3DTraining></A><B>Training (Looking For Some =
+Competition?)</B></H2>We=20
+hoped that these primitives would enable our genetic player to gain a =
+greater=20
+insight into what makes an othello board a winner.&nbsp; To help him =
+along, we=20
+designed the following ten trainers. Note that the player is white in =
+all of=20
+these cases.=20
+<UL>
+  <LI><B>Player #1 - 4 points of light</B> <BR>white_corners +=20
+  white_near_corners=20
+  <P>This player is possibly the worst of the bunch.&nbsp; While making =
+the=20
+  corners a goal is a good thing, making the near corners a goal is=20
+  suicidal.&nbsp; Since the near corner spots will become available =
+first, the=20
+  player will grab them, thus opening the corners to his opponent, and =
+costing=20
+  him the game. <BR>&nbsp; </P>
+  <LI><B>Player #2 - Push him away</B> <BR>black_edges + black_corners=20
+  <P>This player has a simple idea: get the middle.&nbsp; It decides to =
+do this=20
+  by looking for opportunities to give the perimeter to black.&nbsp; =
+This is=20
+  also suicidal, since we benefit from the experience of knowing that he =
+who has=20
+  the perimeter will almost certainly win the game. <BR>&nbsp; </P>
+  <LI><B>Player #3 - Living on the Edge</B> <BR>white_near_corners + =
+white_edges=20
+
+  <P>This player is getting a little better.&nbsp; He goes for the edge =
+whenever=20
+  possible.&nbsp; Unfortunately, his strategy is flawed.&nbsp; If it is=20
+  available, he will grab a spot near the corner, possibly giving it =
+away, and=20
+  he has nothing telling him to grab a corner if it is available. =
+<BR>&nbsp;=20
+</P>
+  <LI><B>Player #4 - Moron Maximizer</B> <BR>white=20
+  <P>This player has a simple strategy.&nbsp; Get as many pieces as =
+possible in=20
+  every move. As mentioned above, this is not the wisest of ideas.&nbsp; =
+He will=20
+  tend to not choose the strategically best squares to move on, and will =
+not be=20
+  so hard to defeat. <BR>&nbsp; </P>
+  <LI><B>Player #5 - Centrist Coalition</B> <BR>- (white_edges +=20
+  white_near_side)=20
+  <P>This player is bad.&nbsp; Not as bad as those that deliver up away =
+the=20
+  corners on a silver platter, but not much better.&nbsp; This player is =
+
+  basically going to avoid the outer two rows and columns (except for =
+the=20
+  corners and near corners).&nbsp; Not much hope for him. <BR>&nbsp; =
+</P>
+  <LI><B>Player #6 - keep him out</B> <BR>white_corners - (3 * =
+black_corners)=20
+  <P>This is where the players start getting decent. This player would =
+like to=20
+  grab the corners, which is always a good thing), but wants even more =
+to keep=20
+  his opponent out of them. <BR>&nbsp; </P>
+  <LI><B>Player #7 - Make him choke</B> =
+<BR>&nbsp;white_unoccup_near_corners -=20
+  black_near_corners=20
+  <P>This player has the general idea, but does not really execute it=20
+  well.&nbsp; He is trying to keep his opponent away from the corners, =
+in all=20
+  cases.&nbsp; This makes it hard for him to get the corners, though. =
+<BR>&nbsp;=20
+  </P>
+  <LI><B>Player #8 - Make a run not quite for the border</B> =
+<BR>white_near_side=20
+  - black_near_side=20
+  <P>This player has regressed a bit. He tries to occupy the squares =
+near the=20
+  sides, while keeping his opponent away from them.&nbsp; This is not =
+such a=20
+  good thing, since it does nothing for him to establish control over =
+squares on=20
+  the board. <BR>&nbsp; </P>
+  <LI><B>Player #9 - Surround Soundly</B> <BR>white_corners + =
+white_edges +=20
+  white_near_corners + white_near_side=20
+  <P>This player is getting better. He basically tries to get the two =
+outer=20
+  perimeters of the board.&nbsp; There are really two flaws in =
+this.&nbsp; By=20
+  trying for the two outer perimeters, he will often grab the squares in =
+the=20
+  next to outer row first, leaving the edge pieces open to be grabbed by =
+his=20
+  opponent.&nbsp; He also does not recognize that taking a square =
+adjacent to a=20
+  corner is not usually such a good thing. <BR>&nbsp; </P>
+  <LI><B>Player #10 - Savvy Strategist</B> <BR>(white_corners +=20
+  black_unoccup_near_corners + white_center_edges) - =
+(white_unoccup_near_corners=20
+  + black_center_edges)=20
+  <P>This is by far the best of the training players.&nbsp; He basically =
+tries=20
+  to get the corners and non-next-to-corner edges, while trying to keep =
+himself=20
+  out of the dangerous next-to-corner squares, and putting his opponent =
+in=20
+  them.&nbsp; Using the unoccup_near_corners primitives is important, =
+because if=20
+  the corner is occupied, it is often better strategically to take it, =
+and the=20
+  player might not do that if he just looked at corner spaces in=20
+  general.</P></LI></UL>
+<H2><A name=3DImplementation></A>Implementation details</H2>The above =
+was=20
+implemented by creating a new kind of trainer that extended =
+OthelloPlayer, which=20
+in itself encapsulated the above ten genetic players as well as =
+Othello.&nbsp;=20
+The OthelloTrainer, as it came to be called, determined which player to =
+pit=20
+against the new GP by varying on the generation #, i.e., every three =
+generations=20
+a successive player was employed. After the first 30 generations, Edgar =
+was=20
+pitted against the GP for three generations in turn.&nbsp; (We chose =
+three=20
+generations as a compromise between completeness and time.)=20
+<P>The resulting OthelloTrainer player was pitted against the GP =
+learning=20
+algorithm in the GPOthello class and training was done with a population =
+size of=20
+200 and, as previously mentioned, 33 generations.&nbsp; (One game was =
+played per=20
+player per generation, since the players were deterministic).&nbsp; =
+Several=20
+different runs were made to see if mutation would work better in certain =
+
+instances.=20
+<P>In order to evaluate the results generated by the above, in addition =
+to using=20
+the fitness results generated by the system we created an OthelloPlayGP =
+class=20
+which would essentially allow Scott to play our generated GP =
+players.&nbsp; The=20
+results discuss some of the findings and conclusions he made about the =
+generated=20
+players.&nbsp;&nbsp; (In fact, look below if you would like to challenge =
+our=20
+player itself!)=20
+<H2><A name=3DResults></A>Results</H2>Our results were mixed -- the =
+players=20
+generated through this system were in general better than those made by =
+our=20
+original project, which naively trained against Edgar, but the players =
+did not=20
+fare terribly well against Edgar either.=20
+<UL>
+  <LI><B>Best Generated Player: </B>black_near_corners <BR>&nbsp;&nbsp;=20
+  =
+<TT>Gen|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;=20
+  Fitness&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  |&nbsp;&nbsp; Complexity&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;=20
+  Depth&nbsp;&nbsp; |Variety</TT> <BR><TT>&nbsp;&nbsp;&nbsp;=20
+  |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Best&nbsp;&nbsp;&nbsp;=20
+  Average&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Worst|&nbsp;&nbsp;=20
+  B&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; A&nbsp;&nbsp;&nbsp;&nbsp; W|&nbsp;=20
+  B&nbsp;&nbsp;&nbsp; A&nbsp;&nbsp; W|</TT> <BR><TT>&nbsp;&nbsp;=20
+  0|&nbsp;&nbsp;&nbsp;&nbsp; 37.00&nbsp;&nbsp;&nbsp;&nbsp;=20
+  143.00&nbsp;&nbsp;&nbsp;&nbsp; 109.00|&nbsp;&nbsp; 5&nbsp;&nbsp;=20
+  14.6&nbsp;&nbsp;&nbsp; 63|&nbsp; 3&nbsp; 3.6&nbsp;&nbsp; 6| 1.000</TT> =
+
+  <BR><TT>&nbsp;&nbsp; 1|&nbsp;&nbsp;&nbsp;&nbsp;=20
+  15.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+75.20&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  62.00|&nbsp;&nbsp; 3&nbsp;&nbsp;&nbsp; 9.4&nbsp;&nbsp;&nbsp; 31|&nbsp; =
+2&nbsp;=20
+  3.3&nbsp;&nbsp; 5| 1.000</TT> <BR><TT>&nbsp;&nbsp; =
+2|&nbsp;&nbsp;&nbsp;&nbsp;=20
+  15.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+83.10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  36.00|&nbsp;&nbsp; 3&nbsp;&nbsp;&nbsp; 6.2&nbsp;&nbsp;&nbsp; 13|&nbsp; =
+2&nbsp;=20
+  3.1&nbsp;&nbsp; 5| 0.700</TT> <BR><TT>&nbsp;&nbsp; =
+3|&nbsp;&nbsp;&nbsp;&nbsp;=20
+  22.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+60.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  42.00|&nbsp;&nbsp; 3&nbsp;&nbsp;&nbsp; 6.4&nbsp;&nbsp;&nbsp; 13|&nbsp; =
+2&nbsp;=20
+  3.3&nbsp;&nbsp; 7| 0.800</TT> <BR><TT>&nbsp;&nbsp; =
+4|&nbsp;&nbsp;&nbsp;&nbsp;=20
+  21.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+52.90&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  32.00|&nbsp;&nbsp; 7&nbsp;&nbsp;&nbsp; 7.4&nbsp;&nbsp;&nbsp;&nbsp; =
+5|&nbsp;=20
+  4&nbsp; 3.6&nbsp;&nbsp; 3| 1.000</TT> <BR><TT>&nbsp;&nbsp;=20
+  5|&nbsp;&nbsp;&nbsp;&nbsp; 21.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  56.40&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 40.00|&nbsp;&nbsp; =
+7&nbsp;&nbsp;&nbsp;=20
+  6.4&nbsp;&nbsp;&nbsp;&nbsp; 9|&nbsp; 4&nbsp; 3.3&nbsp;&nbsp; 5| =
+0.900</TT>=20
+  <BR><TT>&nbsp;&nbsp; 6|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  5.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 55.90&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+
+  55.00|&nbsp;&nbsp; 5&nbsp;&nbsp;&nbsp; 5.6&nbsp;&nbsp;&nbsp; 13|&nbsp; =
+3&nbsp;=20
+  3.0&nbsp;&nbsp; 6| 0.900</TT> <BR><TT>&nbsp;&nbsp;=20
+  7|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  59.60&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 49.00|&nbsp;&nbsp; =
+5&nbsp;&nbsp;&nbsp;=20
+  4.4&nbsp;&nbsp;&nbsp;&nbsp; 7|&nbsp; 3&nbsp; 2.5&nbsp;&nbsp; 3| =
+0.800</TT>=20
+  <BR><TT>&nbsp;&nbsp; 8|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  3.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 49.60&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+
+  42.00|&nbsp;&nbsp; 3&nbsp;&nbsp;&nbsp; 4.2&nbsp;&nbsp;&nbsp;&nbsp; =
+5|&nbsp;=20
+  2&nbsp; 2.5&nbsp;&nbsp; 3| 0.800</TT> <BR><TT>&nbsp;&nbsp;=20
+  9|&nbsp;&nbsp;&nbsp;&nbsp; 30.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  75.10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 52.00|&nbsp;&nbsp; =
+3&nbsp;&nbsp;&nbsp;=20
+  3.6&nbsp;&nbsp;&nbsp;&nbsp; 3|&nbsp; 2&nbsp; 2.3&nbsp;&nbsp; 2| =
+0.900</TT>=20
+  <BR><TT>&nbsp; 10|&nbsp;&nbsp;&nbsp;&nbsp; =
+30.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  63.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 51.00|&nbsp;&nbsp; =
+3&nbsp;&nbsp;&nbsp;=20
+  4.0&nbsp;&nbsp;&nbsp;&nbsp; 7|&nbsp; 2&nbsp; 2.5&nbsp;&nbsp; 4| =
+0.800</TT>=20
+  <BR><TT>&nbsp; 11|&nbsp;&nbsp;&nbsp;&nbsp; =
+30.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  78.70&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 50.00|&nbsp;&nbsp; =
+3&nbsp;&nbsp;&nbsp;=20
+  5.8&nbsp;&nbsp;&nbsp;&nbsp; 5|&nbsp; 2&nbsp; 3.4&nbsp;&nbsp; 3| =
+0.700</TT>=20
+  <BR><TT>&nbsp; 12|&nbsp;&nbsp;&nbsp;&nbsp; =
+19.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  68.80&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 46.00|&nbsp;&nbsp; =
+1&nbsp;&nbsp;&nbsp;=20
+  5.0&nbsp;&nbsp;&nbsp;&nbsp; 3|&nbsp; 1&nbsp; 3.0&nbsp;&nbsp; 2| =
+0.800</TT>=20
+  <BR><TT>&nbsp; 13|&nbsp;&nbsp;&nbsp;&nbsp; =
+19.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  58.40&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 29.00|&nbsp;&nbsp; =
+1&nbsp;&nbsp;&nbsp;=20
+  4.8&nbsp;&nbsp;&nbsp;&nbsp; 9|&nbsp; 1&nbsp; 2.9&nbsp;&nbsp; 5| =
+0.700</TT>=20
+  <BR><TT>&nbsp; 14|&nbsp;&nbsp;&nbsp;&nbsp; =
+19.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  51.60&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 52.00|&nbsp;&nbsp; =
+1&nbsp;&nbsp;&nbsp;=20
+  4.4&nbsp;&nbsp;&nbsp;&nbsp; 9|&nbsp; 1&nbsp; 2.6&nbsp;&nbsp; 4| =
+0.700</TT>=20
+  <BR><TT>&nbsp; 15|&nbsp;&nbsp;&nbsp;&nbsp; =
+21.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  52.40&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 40.00|&nbsp;&nbsp; =
+1&nbsp;&nbsp;&nbsp;=20
+  4.2&nbsp;&nbsp;&nbsp;&nbsp; 9|&nbsp; 1&nbsp; 2.6&nbsp;&nbsp; 5| =
+0.600</TT>=20
+  <BR><TT>&nbsp; 16|&nbsp;&nbsp;&nbsp;&nbsp; =
+21.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  51.10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 40.00|&nbsp;&nbsp; =
+1&nbsp;&nbsp;&nbsp;=20
+  3.6&nbsp;&nbsp;&nbsp;&nbsp; 9|&nbsp; 1&nbsp; 2.3&nbsp;&nbsp; 5| =
+0.700</TT>=20
+  <BR><TT>&nbsp; 17|&nbsp;&nbsp;&nbsp;&nbsp; =
+21.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  52.70&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 36.00|&nbsp;&nbsp; =
+1&nbsp;&nbsp;&nbsp;=20
+  3.0&nbsp;&nbsp;&nbsp;&nbsp; 5|&nbsp; 1&nbsp; 2.0&nbsp;&nbsp; 3| =
+0.500</TT>=20
+  <BR><TT>&nbsp; 18|&nbsp;&nbsp;&nbsp;&nbsp; =
+19.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  46.60&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 23.00|&nbsp;&nbsp; =
+1&nbsp;&nbsp;&nbsp;=20
+  2.8&nbsp;&nbsp;&nbsp;&nbsp; 5|&nbsp; 1&nbsp; 1.9&nbsp;&nbsp; 3| =
+0.500</TT>=20
+  <BR><TT>&nbsp; 19|&nbsp;&nbsp;&nbsp;&nbsp; =
+19.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  45.70&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 25.00|&nbsp;&nbsp; =
+1&nbsp;&nbsp;&nbsp;=20
+  2.8&nbsp;&nbsp;&nbsp;&nbsp; 5|&nbsp; 1&nbsp; 1.9&nbsp;&nbsp; 3| =
+0.600</TT>=20
+  <BR><TT>&nbsp; 20|&nbsp;&nbsp;&nbsp;&nbsp; =
+21.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  43.60&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 25.00|&nbsp;&nbsp; =
+3&nbsp;&nbsp;&nbsp;=20
+  3.8&nbsp;&nbsp;&nbsp;&nbsp; 5|&nbsp; 2&nbsp; 2.4&nbsp;&nbsp; 3| =
+0.500</TT>=20
+  <BR><TT>&nbsp; 21|&nbsp;&nbsp;&nbsp;&nbsp; =
+14.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  43.80&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 29.00|&nbsp;&nbsp; =
+3&nbsp;&nbsp;&nbsp;=20
+  3.4&nbsp;&nbsp;&nbsp;&nbsp; 5|&nbsp; 2&nbsp; 2.2&nbsp;&nbsp; 3| =
+0.400</TT>=20
+  <BR><TT>&nbsp; 22|&nbsp;&nbsp;&nbsp;&nbsp; =
+12.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  42.20&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 27.00|&nbsp;&nbsp; =
+1&nbsp;&nbsp;&nbsp;=20
+  3.2&nbsp;&nbsp;&nbsp;&nbsp; 3|&nbsp; 1&nbsp; 2.1&nbsp;&nbsp; 2| =
+0.500</TT>=20
+  <BR><TT>&nbsp; 23|&nbsp;&nbsp;&nbsp;&nbsp; =
+12.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  39.70&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 27.00|&nbsp;&nbsp; =
+1&nbsp;&nbsp;&nbsp;=20
+  2.6&nbsp;&nbsp;&nbsp;&nbsp; 3|&nbsp; 1&nbsp; 1.8&nbsp;&nbsp; 2| =
+0.500</TT>=20
+  <BR><TT>&nbsp; 24|&nbsp;&nbsp;&nbsp;&nbsp; =
+24.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  44.60&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 28.00|&nbsp;&nbsp; =
+1&nbsp;&nbsp;&nbsp;=20
+  2.4&nbsp;&nbsp;&nbsp;&nbsp; 5|&nbsp; 1&nbsp; 1.7&nbsp;&nbsp; 3| =
+0.500</TT>=20
+  <BR><TT>&nbsp; 25|&nbsp;&nbsp;&nbsp;&nbsp; =
+24.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  42.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 26.00|&nbsp;&nbsp; =
+1&nbsp;&nbsp;&nbsp;=20
+  1.6&nbsp;&nbsp;&nbsp;&nbsp; 3|&nbsp; 1&nbsp; 1.3&nbsp;&nbsp; 2| =
+0.300</TT>=20
+  <BR><TT>&nbsp; 26|&nbsp;&nbsp;&nbsp;&nbsp; =
+24.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  49.60&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 26.00|&nbsp;&nbsp; =
+1&nbsp;&nbsp;&nbsp;=20
+  1.4&nbsp;&nbsp;&nbsp;&nbsp; 3|&nbsp; 1&nbsp; 1.2&nbsp;&nbsp; 2| =
+0.200</TT>=20
+  <BR><TT>&nbsp; 27|&nbsp;&nbsp;&nbsp;&nbsp; =
+21.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  46.30&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 25.00|&nbsp;&nbsp; =
+1&nbsp;&nbsp;&nbsp;=20
+  1.8&nbsp;&nbsp;&nbsp;&nbsp; 5|&nbsp; 1&nbsp; 1.4&nbsp;&nbsp; 3| =
+0.300</TT>=20
+  <BR><TT>&nbsp; 28|&nbsp;&nbsp;&nbsp;&nbsp; =
+21.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  45.60&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 23.00|&nbsp;&nbsp; =
+1&nbsp;&nbsp;&nbsp;=20
+  1.2&nbsp;&nbsp;&nbsp;&nbsp; 3|&nbsp; 1&nbsp; 1.1&nbsp;&nbsp; 2| =
+0.200</TT>=20
+  <BR><TT>&nbsp; 29|&nbsp;&nbsp;&nbsp;&nbsp; =
+21.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  43.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 23.00|&nbsp;&nbsp; =
+1&nbsp;&nbsp;&nbsp;=20
+  1.2&nbsp;&nbsp;&nbsp;&nbsp; 3|&nbsp; 1&nbsp; 1.1&nbsp;&nbsp; 2| =
+0.200</TT>=20
+  <BR><TT>&nbsp; 30|&nbsp;&nbsp;&nbsp;&nbsp; =
+43.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  64.20&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 43.00|&nbsp;&nbsp; =
+1&nbsp;&nbsp;&nbsp;=20
+  1.0&nbsp;&nbsp;&nbsp;&nbsp; 1|&nbsp; 1&nbsp; 1.0&nbsp;&nbsp; 1| =
+0.100</TT>=20
+  <BR><TT>&nbsp; 31|&nbsp;&nbsp;&nbsp;&nbsp; =
+43.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  64.20&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 43.00|&nbsp;&nbsp; =
+1&nbsp;&nbsp;&nbsp;=20
+  1.0&nbsp;&nbsp;&nbsp;&nbsp; 1|&nbsp; 1&nbsp; 1.0&nbsp;&nbsp; 1| =
+0.100</TT>=20
+  <BR><TT>&nbsp; 32|&nbsp;&nbsp;&nbsp;&nbsp; =
+43.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  86.00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 43.00|&nbsp;&nbsp; =
+1&nbsp;&nbsp;&nbsp;=20
+  1.0&nbsp;&nbsp;&nbsp;&nbsp; 1|&nbsp; 1&nbsp; 1.0&nbsp;&nbsp; 1| =
+0.100</TT>=20
+  =
+<P><TT>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+</TT>=20
+  <BR><TT>Generation:32 best:0 worst:0</TT> <BR><TT>&nbsp;=20
+  GP#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  dad&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mum =
+oper mut=20
+  shrk mut&nbsp;&nbsp;&nbsp; fitness&nbsp; len&nbsp; dep</TT> =
+<BR><TT>=3D=3D=3D=3D=3D=20
+  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D =
+=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D =
+=3D=3D=3D=3D</TT>=20
+  <BR><TT>B&nbsp;&nbsp; 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  6:RPB:1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  =
+2:RPB:1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+
+  43.00&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp; 1</TT>=20
+  <P><TT>RPB:&nbsp;&nbsp; black_near_corners</TT>=20
+  <P><TT>Run time 66.79 seconds, 2.02 seconds/generation</TT>=20
+  <P>Note that this player fared poorly against Edgar in generations =
+30-32, but=20
+  against the other ten players it fared well, winning in most (the =
+fitness is=20
+  the number of pieces left, so if it's less than 32 our GP won.)&nbsp; =
+This=20
+  player, however, was difficult to use in reality.&nbsp; The problem is =
+that=20
+  black_near_corners tries to <I>predict</I> what the opposite player =
+will do;=20
+  unfortunately, against non-deterministic players like humans this =
+algorithm=20
+  immediately fails.&nbsp; We therefore decided to pick an intermediate =
+child=20
+  that appeared to have good performance, as shown immediately=20
+below.</P></LI></UL>
+<UL>
+  <LI><B>Intermediate Generated Player: </B>white_center_edges +=20
+  black_near_corners=20
+  =
+<BR><TT>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+</TT>=20
+  <BR><TT>Generation:11 best:6 worst:1</TT> <BR><TT>&nbsp;=20
+  GP#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  dad&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mum =
+oper mut=20
+  shrk mut&nbsp;&nbsp;&nbsp; fitness&nbsp; len&nbsp; dep</TT> =
+<BR><TT>=3D=3D=3D=3D=3D=20
+  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D =
+=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D =
+=3D=3D=3D=3D</TT>=20
+  <BR><TT>B&nbsp;&nbsp; 6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  9:RPB:1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+  =
+1:RPB:5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+
+  30.00&nbsp;&nbsp;&nbsp; 3&nbsp;&nbsp;&nbsp; 2</TT>=20
+  <P><TT>RPB:&nbsp; ( +&nbsp;&nbsp; white_center_edges&nbsp;&nbsp;=20
+  black_near_corners )</TT>=20
+  <P>This player, while not the best in fitness, was playable by Scott, =
+so we=20
+  could see his analysis.=20
+  <P><B>Scott's Analysis: </B>This player is not so bad.&nbsp; Not much=20
+  competition for Edgar, but better than most of our training =
+players.&nbsp; A=20
+  not surprising result for a player that trained on our training =
+players, which=20
+  are not the most skilled Othello players in the world, or on CS. He =
+did okay=20
+  playing me, but just didn't have the strategic depth to=20
+win.</P></LI></UL>Considering that the final-generated players were not =
+terribly=20
+successful, we decided to investigate our own players to try and =
+determine if=20
+our players did an adequate training job.&nbsp; We picked one of the =
+better ones=20
+and presented it to Scott:=20
+<UL>
+  <LI><B>Our player - played for comparison purposes</B> =
+<BR>white_corners +=20
+  white_edges + white_near_corners + white_near_side=20
+  <P><B>Scott's Analysis:</B> This player is also fairly decent. =
+However, like=20
+  many Shakespearean heroes, it does have a tragic flaw. The inclusion =
+of=20
+  white_near_corners opens up the possibility of giving the corner =
+away.&nbsp;=20
+  In fact, each of the five times I played him, the turning point of the =
+game=20
+  was when he seemed to be doing well, and then moved next to a corner, =
+handing=20
+  it to me on a silver platter, so to speak.</P></LI></UL>
+<H2><A name=3D"Other works"></A><B>Other works (the competition -- =
+related Othello=20
+AI research)</B></H2>In general, Edgar's approach to learning how to =
+play=20
+Othello is not so optimized.&nbsp; He basically provides evaluation =
+functions to=20
+be used on any given game board at any given time.&nbsp; One way to =
+improve upon=20
+this would be to implement an artificial intelligence algorithm to =
+search the=20
+game board space for a few moves ahead, looking to see what the best =
+move would=20
+be considering what moves would follow it.&nbsp; One way of doing this, =
+using an=20
+alpha-beta search, is similar to what was done by Robert E. Smith and =
+Brian Gray=20
+in their paper <I>Co-Adaptive genetic Algorithms: An Example in Othello=20
+Strategy</I>.&nbsp;&nbsp; In their paper, Smith and Gray describe a =
+strategy of=20
+training their Othello player with a Co-Adaptive fitness function.&nbsp; =
+Each=20
+individual in the population was evaluated on how well it performed =
+playing=20
+games with other members of the population.&nbsp; As was noted in the =
+paper,=20
+this method does have a major downside, one which is not a significant =
+problem=20
+for our method.&nbsp; The&nbsp; co-adaptive training tends to have a =
+negative=20
+effect on the fitness of the better players in the population when they =
+compete=20
+against each other.&nbsp; Their results exhibit this, as there is not =
+apparent=20
+improvement in the quality of players over time.&nbsp; However, the =
+player was=20
+fairly competitive, partially due to the use of an alpha-beta search to =
+evaluate=20
+moves several levels down in the game.=20
+<P>The use of alpha-beta to evaluate an Othello board is by no means a =
+new=20
+idea.&nbsp; In Sections 18.6 - 18.12 of his book <I>Paradigms of =
+Artificial=20
+Intelligence Programming,</I> Peter Norvig outlines a lisp program to =
+play=20
+Othello using an alpha-beta evaluation function.&nbsp; He mentions two=20
+high-calibur Othello playing programs, <I>Iago</I>, created by Paul =
+Rosenbloom,=20
+and <I>Bill</I>, created by Kai-Fu-Lee.&nbsp; The later program, =
+<I>Bill</I>,=20
+defeated the highest rated American Othello player (Brian Rose) by a =
+score of=20
+56-8 in 1989.&nbsp;&nbsp; As we did, Norvig chooses to focus on certain =
+aspects=20
+of the Othello board in his evaluation function (His code actually comes =
+from=20
+both Iago and Bill).&nbsp; The two he chooses are Mobility and Edge=20
+Stability.&nbsp;&nbsp; Norvig defines two types of mobility, current and =
+
+potential.&nbsp; Current mobility is defined as the number of moves =
+available to=20
+the player.&nbsp; Potential mobility is the number of empty spaces next =
+to an=20
+opponents piece.&nbsp; Edge stability is determined by taking the =
+approximately=20
+60,000 possible combinations of edge contents and evaluating them to see =
+which=20
+are optimal.&nbsp; Norvig combines these factors in a linear function, =
+with=20
+coefficients being based on the move number.&nbsp; While this is =
+apparently an=20
+effective strategy, we fell having Edgar set his own weights will be as=20
+effective, assuming he can be trained sufficiently.=20
+<P>In his paper <I>Games Computers Play: Simulating Characteristic =
+Function Game=20
+Playing Agents with Classifier Systems</I>, Garett Dworman discussed the =
+
+abilities of his generated players to achieve their optimal performance =
+level.=20
+The details of his "game" are not so important, as his methods are very =
+general=20
+and could be easily applied to many types of learning.&nbsp; Dwormans =
+paper=20
+concluded that his players were, in fact, able to reach their optimal =
+levels in=20
+competition with each other.&nbsp; Each player started with a =
+<I>simple</I>=20
+evaluation function which it adjusted through training.&nbsp; Dworman =
+trained=20
+his players to the point where they had reached the optimal playing =
+level, and=20
+compared them to his evaluation of what the player should do.&nbsp; They =
+
+matched.=20
+<H2><A name=3D"Future Research"></A><B>Future Research</B></H2>There are =
+several=20
+ways we could continue our research.&nbsp; One way would be to integrate =
+
+training against random players, i.e., incorporate nondeterminism.&nbsp; =
+This=20
+would ensure that the GA is progressing well for a desired target =
+against=20
+humans, which are inherently nondeterministic (most of the time).&nbsp;=20
+Additionally, a<FONT size=3D+0>s was mentioned before, time was a major =
+constraint=20
+in this project.&nbsp; The time required to train is substantial.&nbsp; =
+If we=20
+had more time, there are ways we could have tried to improve the =
+training=20
+process so it works around weaknesses it finds in the trainers.&nbsp; We =
+might=20
+even use meta-learning and use a learning method to evaluate better =
+training=20
+functions.&nbsp; One method of developing a good player would be to =
+build up to=20
+it like a pyramid: start training against random players, and develop a=20
+GA.&nbsp; Make that GA the first training player, and create a second =
+GA.&nbsp;=20
+Do this until there are sufficient GAs to train a very good =
+player.</FONT>=20
+<H2><A name=3DConclusion></A>Conclusion</H2>Although the results were =
+not the=20
+best, the system that was used to implement it can be adapted for future =
+
+experimentation.&nbsp;&nbsp; The most important guideline in guiding a =
+trainer=20
+is in making sure the training players guide the GA along =
+appropriately.&nbsp;=20
+The players must be of different levels, so that the GA doesn't =
+flounder, but=20
+has successively harder competition so it can improve.&nbsp; Spending=20
+substantial time in the player-creation process seems to be =
+important.&nbsp; We=20
+also discovered the GP has a tendency to evolve simple players, so an =
+important=20
+starting point is to select a few, high quality primitives to =
+use.&nbsp;&nbsp;=20
+With some additional programming, it should be feasible to develop a =
+practical,=20
+commercial Othello player.=20
+<H2><A name=3DMiscellaneous></A>Miscellaneous</H2>We're sure this =
+document has=20
+just whetted your appetite to learn or master Othello.&nbsp; Here's a =
+start: if=20
+you would like to play our generated intermediate player, <A=20
+href=3D"http://www.cs.columbia.edu/~evs/ml/OthelloStudProj/janak/playgp.h=
+tml">click=20
+here</A>!=20
+<P>Scott's expert status is a scientific fact, not a product of boasting =
+
+(although that doesn't hurt either).&nbsp; If you need convincing, <A=20
+href=3D"http://www.cs.columbia.edu/~evs/ml/OthelloStudProj/janak/record.h=
+tml">click=20
+here</A> to see his record against <A=20
+href=3D"http://www.cs.columbia.edu/~evs/ml/OthelloStudProj/janak/edgar.ht=
+ml">Edgar</A>.=20
+
+<P>
+<HR width=3D"100%">
+<I>Last updated Dec 17 1997 by <A =
+href=3D"mailto:jjp32@columbia.edu">Janak J=20
+Parekh</A> and <A href=3D"mailto:sas104@columbia.edu">Scott A =
+Susser</A>.</I>=20
+</BODY></HTML>
